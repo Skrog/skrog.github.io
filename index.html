@@ -1,9 +1,116 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Goddaw</title>
-    </head>
-    <body>
-        <p>Hej Xander</p>
-    </body>
+<html lang="da-DK">
+<head>
+  <meta charset="UTF-8">
+  <title>Alexander's Profil</title>
+  <style>
+    body {
+      background-color: #e2e7ef;
+    }
+    table.profile-table {
+      margin: 60px auto;
+      background: none;
+      border-collapse: separate;
+      border-spacing: 20px;
+    }
+    .profile-cell, .info-cell, .links-cell {
+      background-color: white;
+      border-radius: 5px;
+      vertical-align: top;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .profile-cell {
+      width: 250px;
+      text-align: center;
+      height: 250px;
+    }
+    .info-cell {
+      width: 500px;
+      text-align: left;
+    }
+    .links-cell {
+      width: 250px;
+      text-align: left;
+      height: 140px;
+    }
+    .profile-pic {
+      width: 80px;
+      height: 80px;
+      padding-top: 8px;
+    }
+    .icon {
+      width: 30px;
+      height: 30px;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+    .gray { color: gray; }
+    .section-title { color: black; font-weight: bold; }
+    hr { margin: 10px 0; }
+    .info-table td { padding: 4px 8px; }
+  </style>
+</head>
+<body>
+  <table class="profile-table">
+    <tr>
+      <!-- Profile square -->
+      <td class="profile-cell">
+        <img class="profile-pic" src="profile-user-outline-vector-icon.png" alt="Profile Picture"><br>
+        <p style="font-size:160%;"> Alexander </p>
+        <p class="gray"> Elev </p>
+        <p class="gray"> Klintebjerg Efterskole </p>
+      </td>
+      <!-- Information square -->
+      <td class="info-cell">
+        <table class="info-table">
+          <tr>
+            <td class="section-title">Navn</td>
+            <td class="gray">Alexander</td>
+          </tr>
+          <tr>
+            <td class="section-title">Alder</td>
+            <td class="gray">15</td>
+          </tr>
+          <tr>
+            <td class="section-title">Hobbies</td>
+            <td class="gray">Game Dev, Blender, Gaming</td>
+          </tr>
+          <tr>
+            <td class="section-title">Skole</td>
+            <td class="gray">Klintebjerg Efterskole</td>
+          </tr>
+          <tr>
+            <td class="section-title">Linje</td>
+            <td class="gray">Esport</td>
+          </tr>
+          <tr>
+            <td class="section-title">Hold</td>
+            <td class="gray">League of Legends</td>
+          </tr>
+          <tr>
+            <td class="section-title">Adresse</td>
+            <td class="gray">Klintebjergvej 195, 5450 Otterup</td>
+          </tr>
+        </table>
+      </td>
+      <!-- Link square -->
+      <td class="links-cell">
+        <!-- Discord -->
+        <div>
+          <img class="icon" src="discord-black-icon-1.png" alt="Discord Profile">
+          <span class="section-title">Discord</span><br>
+          <span class="gray">xanderdk.</span>
+        </div>
+        <hr>
+        <!-- Twitter/X -->
+        <div>
+          <img class="icon" src="twitter-icon-download-18.png" alt="Twitter/X Profile">
+          <span class="section-title">Twitter/X</span><br>
+          <a class="gray" href="https://x.com/XanderDK22">@xanderdk22</a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
 </html>
