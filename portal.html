@@ -74,7 +74,7 @@
             font-weight: 600; /* Slightly bolder label */
         }
 
-        .age-verification-section input[type="date"] {
+        .age-verification-section input[type="month"] { /* Changed to type="month" */
             padding: 0.9rem 1.2rem; /* Increased padding for input */
             border: 1px solid #a0a0a0; /* Slightly darker border */
             border-radius: 0.75rem; /* More rounded corners for inputs */
@@ -144,7 +144,7 @@
             p {
                 font-size: 0.95rem; /* Smaller paragraph text on mobile */
             }
-            .age-verification-section input[type="date"] {
+            .age-verification-section input[type="month"] { /* Changed to type="month" */
                 width: 100%; /* Full width on smaller screens */
                 max-width: none;
             }
@@ -195,8 +195,8 @@
         </p>
 
         <div class="age-verification-section">
-            <label for="dob-input" id="dob-label">Please enter your Date of Birth:</label>
-            <input type="date" id="dob-input">
+            <label for="dob-input" id="dob-label">Please enter your Month and Year of Birth:</label>
+            <input type="month" id="dob-input">
             <button id="check-age-button">Continue</button>
             <div id="age-warning-message" class="warning-message">
                 <span id="warning-text">This network is intended for adult consumers only.</span>
@@ -283,13 +283,12 @@
             },
             // New translations for age verification fields
             'dob-label': {
-                'en': 'Please enter your Date of Birth:',
-                'fr': 'Veuillez entrer votre date de naissance :',
-                'de': 'Bitte geben Sie Ihr Geburtsdatum ein:',
-                'es': 'Por favor, introduzca su fecha de nacimiento:',
-                'zh': '请输入您的出生日期：'
+                'en': 'Please enter your Month and Year of Birth:', /* Updated label text */
+                'fr': 'Veuillez entrer votre mois et année de naissance :',
+                'de': 'Bitte geben Sie Ihren Geburtsmonat und Ihr Geburtsjahr ein:',
+                'es': 'Por favor, introduzca su mes y año de nacimiento:',
+                'zh': '请输入您的出生月份和年份：'
             },
-            // Renamed from 'check-age-button'
             'check-age-button': {
                 'en': 'Continue',
                 'fr': 'Continuer',
@@ -320,15 +319,13 @@
             for (const id in translations) {
                 const element = document.getElementById(id);
                 if (element) {
-                    // Special handling for the button text
                     if (id === 'check-age-button') {
                         element.textContent = translations[id][preferredLang] || translations[id]['en'];
-                    } else if (id !== 'warning-text') { // For other elements, update content if not warning-text
+                    } else if (id !== 'warning-text') {
                         element.textContent = translations[id][preferredLang] || translations[id]['en'];
                     }
                 }
             }
-            // Update warning text separately to ensure it gets translated when shown
             const warningElement = document.getElementById('warning-text');
             if (warningElement) {
                 warningElement.textContent = translations['warning-text'][preferredLang] || translations['warning-text']['en'];
@@ -336,13 +333,19 @@
             document.documentElement.lang = preferredLang;
         }
 
-        // Function to calculate age
-        function calculateAge(dob) {
-            const birthDate = new Date(dob);
+        // Function to calculate age based on month and year
+        function calculateAge(dobMonthYear) {
+            // dobMonthYear will be in "YYYY-MM" format from input type="month"
+            const [birthYear, birthMonth] = dobMonthYear.split('-').map(Number); // Get year and month as numbers
+
             const today = new Date();
-            let age = today.getFullYear() - birthDate.getFullYear();
-            const m = today.getMonth() - birthDate.getMonth();
-            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            const currentYear = today.getFullYear();
+            const currentMonth = today.getMonth() + 1; // getMonth() is 0-indexed
+
+            let age = currentYear - birthYear;
+
+            // Adjust age if the birth month has not yet occurred in the current year
+            if (currentMonth < birthMonth) {
                 age--;
             }
             return age;
@@ -352,10 +355,9 @@
         function checkAge() {
             const dobInput = document.getElementById('dob-input');
             const warningMessageDiv = document.getElementById('age-warning-message');
-            const dob = dobInput.value;
+            const dob = dobInput.value; // This will be "YYYY-MM"
 
             if (!dob) {
-                // If date of birth is not entered, show the warning message (already translated by applyTranslations)
                 warningMessageDiv.classList.add('show');
                 return;
             }
@@ -372,7 +374,7 @@
 
         // Event listener for the "Continue" button
         document.addEventListener('DOMContentLoaded', () => {
-            applyTranslations(); // Apply initial translations when DOM is loaded
+            applyTranslations();
 
             const checkAgeButton = document.getElementById('check-age-button');
             if (checkAgeButton) {
