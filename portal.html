@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Language Translator</title>
+    <style>
+        /* Import Open Sans from Google Fonts for a LEGO-like feel */
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+
+        /* Custom styles for the Open Sans font and overall layout */
+        body {
+            font-family: 'Open Sans', sans-serif; /* Changed font to Open Sans */
+            background-color: #f0f2f5; /* Light gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1rem; /* Add some padding for very small screens */
+        }
+        .container {
+            background-color: #ffffff; /* White background for the content box */
+            padding: 2.5rem; /* Increased padding */
+            border-radius: 1.5rem; /* More rounded corners */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Softer shadow */
+            max-width: 90%; /* Responsive width */
+            width: 700px; /* Increased max width for desktop for longer text */
+            text-align: left; /* Changed to left align for readability of notice */
+            border: 1px solid #e0e0e0; /* Subtle border */
+        }
+        h1 {
+            color: #2c3e50; /* Darker heading color, common on modern sites */
+            font-size: 2.5rem; /* Slightly larger heading for prominence */
+            margin-bottom: 1.5rem; /* More space below heading */
+            font-weight: 700; /* Bold heading */
+            text-align: center; /* Center align title */
+        }
+        h2 {
+            color: #34495e; /* Subheading color */
+            font-size: 1.6rem; /* Adjusted subheading size */
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            text-align: center; /* Center align subtitle */
+        }
+        p {
+            color: #34495e; /* Standard text color */
+            font-size: 1.05rem; /* Slightly adjusted paragraph text size */
+            line-height: 1.7; /* Better readability */
+            margin-bottom: 1rem;
+        }
+        .language-display {
+            margin-top: 2rem;
+            font-style: italic;
+            color: #7f8c8d; /* Muted color for language display */
+            font-size: 0.9rem;
+            text-align: center; /* Center align language display */
+        }
+
+        /* Styles for the date input and button */
+        .age-verification-section {
+            margin-top: 2.5rem; /* More space before section */
+            padding-top: 2rem; /* More padding above the content in this section */
+            border-top: 1px solid #d0d0d0; /* Slightly stronger border for separation */
+            text-align: center; /* Center align elements in this section */
+        }
+
+        .age-verification-section label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-size: 1.05rem; /* Matched with paragraph text size */
+            color: #34495e;
+            font-weight: 600; /* Slightly bolder label */
+        }
+
+        .age-verification-section input[type="date"] {
+            padding: 0.9rem 1.2rem; /* Increased padding for input */
+            border: 1px solid #a0a0a0; /* Slightly darker border */
+            border-radius: 0.75rem; /* More rounded corners for inputs */
+            font-size: 1rem;
+            width: calc(100% - 2.4rem); /* Full width minus padding */
+            max-width: 280px; /* Slightly wider input field */
+            margin-bottom: 1rem;
+            box-sizing: border-box; /* Include padding and border in element's total width and height */
+        }
+
+        .age-verification-section button {
+            background-color: #005ce6; /* A common, vibrant blue often seen in modern UIs */
+            color: white;
+            padding: 1rem 2rem; /* Generous padding for a prominent button */
+            border: none;
+            border-radius: 0.75rem; /* Rounded corners for the button */
+            font-size: 1.1rem; /* Larger font size for button text */
+            font-weight: 600; /* Semi-bold button text */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* More pronounced shadow */
+            margin-top: 1.5rem; /* Increased margin to move button further below input */
+            text-transform: uppercase; /* Often used for action buttons */
+            letter-spacing: 0.05em; /* Slight letter spacing */
+        }
+
+        .age-verification-section button:hover {
+            background-color: #0044b3; /* Darker blue on hover */
+            transform: translateY(-3px); /* More noticeable lift effect */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+        }
+
+        .age-verification-section button:active {
+            transform: translateY(0); /* Press down effect */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Style for the warning message */
+        .warning-message {
+            color: #e74c3c; /* Red text for warning */
+            font-weight: 600;
+            margin-top: 1.5rem;
+            font-size: 1.1rem;
+            display: none; /* Hidden by default */
+            padding: 1rem;
+            background-color: #fcecec; /* Light red background */
+            border: 1px solid #e74c3c;
+            border-radius: 0.5rem;
+        }
+        .warning-message.show {
+            display: block; /* Show when 'show' class is added */
+        }
+
+
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem; /* Smaller padding on mobile */
+                border-radius: 1rem; /* Slightly less rounded */
+            }
+            h1 {
+                font-size: 1.8rem; /* Smaller heading on mobile */
+            }
+            h2 {
+                font-size: 1.3rem; /* Adjusted for mobile */
+            }
+            p {
+                font-size: 0.95rem; /* Smaller paragraph text on mobile */
+            }
+            .age-verification-section input[type="date"] {
+                width: 100%; /* Full width on smaller screens */
+                max-width: none;
+            }
+            .age-verification-section button {
+                padding: 0.8rem 1.5rem; /* Smaller padding on mobile button */
+                font-size: 1rem; /* Smaller font on mobile button */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="main-heading">LEGO® Guest Network Access</h1>
+        <h2 id="sub-heading">Privacy Notice</h2>
+        <p id="paragraph-welcome">
+            Welcome to the LEGO® Group!
+        </p>
+        <p id="paragraph-data-collection">
+            When you connect to this network, we collect limited technical data (such as
+            your MAC address, device information, and visited domains — not the content).
+            This is used strictly for network security, operational purposes, and legal
+            compliance. We do not use this data for any other purpose.
+        </p>
+        <p id="paragraph-security-enforcement">
+            To maintain network security
+            and enforce appropriate use, we may assess the risk level of visited domains
+            and block access to malicious or inappropriate websites.
+        </p>
+        <p id="paragraph-no-personal-linking">
+            We do not link this data to you personally, and we do not use it for marketing.
+        </p>
+        <p id="paragraph-data-retention">
+            Data is retained for up to 30 days and may be shared with trusted security
+            providers if needed to address security incidents.
+        </p>
+        <p id="paragraph-adult-use">
+            This network is intended for
+            use by adult consumers only and is not intended for children. We do not
+            knowingly collect personal data from children.
+        </p>
+        <p id="paragraph-redirection">
+            Please note that this service
+            will redirect you to LEGO.com, where personal data may be processed in
+            accordance with our Privacy and Cookie Policy.
+        </p>
+        <p id="paragraph-learn-more">
+            Learn more in our Privacy Policy.
+        </p>
+
+        <div class="age-verification-section">
+            <label for="dob-input" id="dob-label">Please enter your Date of Birth:</label>
+            <input type="date" id="dob-input">
+            <button id="check-age-button">Continue</button>
+            <div id="age-warning-message" class="warning-message">
+                <span id="warning-text">This network is intended for adult consumers only.</span>
+            </div>
+        </div>
+
+        <div class="language-display">
+            Your browser's preferred language is: <span id="detected-language"></span>
+        </div>
+    </div>
+
+    <script>
+        // Define translation data for different languages
+        const translations = {
+            'main-heading': {
+                'en': 'LEGO® Guest Network Access',
+                'fr': 'Accès au réseau invité LEGO®',
+                'de': 'LEGO® Gastzugang zum Netzwerk',
+                'es': 'Acceso a la red de invitados de LEGO®',
+                'zh': '乐高访客网络访问'
+            },
+            'sub-heading': {
+                'en': 'Privacy Notice',
+                'fr': 'Avis de confidentialité',
+                'de': 'Datenschutzhinweis',
+                'es': 'Aviso de privacidad',
+                'zh': '隐私声明'
+            },
+            'paragraph-welcome': {
+                'en': 'Welcome to the LEGO® Group!',
+                'fr': 'Bienvenue au Groupe LEGO® !',
+                'de': 'Willkommen bei der LEGO® Gruppe!',
+                'es': '¡Bienvenido al Grupo LEGO®!',
+                'zh': '欢迎来到乐高®集团！'
+            },
+            'paragraph-data-collection': {
+                'en': 'When you connect to this network, we collect limited technical data (such as your IP address, device information, and visited domains — not the content). This is used strictly for network security, operational purposes, and legal compliance. We do not use this data for any other purpose.',
+                'fr': 'Lorsque vous vous connectez à ce réseau, nous recueillons des données techniques limitées (telles que votre adresse IP, les informations de votre appareil et les domaines visités — pas le contenu). Ceci est utilisé strictement à des fins de sécurité réseau, opérationnelles et de conformité légale. Nous n\'utilisons pas ces données à d\'autres fins.',
+                'de': 'Wenn Sie sich mit diesem Netzwerk verbinden, erfassen wir begrenzte technische Daten (wie Ihre IP-Adresse, Geräteinformationen und besuchte Domains – nicht den Inhalt). Diese werden ausschließlich für Netzwerksicherheit, Betriebszwecke und die Einhaltung gesetzlicher Vorschriften verwendet. Wir nutzen diese Daten nicht für andere Zwecke.',
+                'es': 'Cuando se conecta a esta red, recopilamos datos técnicos limitados (como su dirección IP, información del dispositivo y dominios visitados, no el contenido). Esto se utiliza estrictamente para la seguridad de la red, fines operativos y cumplimiento legal. No utilizamos estos datos para ningún otro propósito.',
+                'zh': '当您连接到此网络时，我们会收集有限的技术数据（例如您的 IP 地址、设备信息和访问过的域名 — 不包括内容）。这些数据严格用于网络安全、运营目的和法律合规性。我们不会将这些数据用于任何其他目的。'
+            },
+            'paragraph-security-enforcement': {
+                'en': 'To maintain network security and enforce appropriate use, we may assess the risk level of visited domains and block access to malicious or inappropriate websites.',
+                'fr': 'Pour maintenir la sécurité du réseau et faire respecter une utilisation appropriée, nous pouvons évaluer le niveau de risque des domaines visités et bloquer l\'accès aux sites Web malveillants ou inappropriés.',
+                'de': 'Um die Netzwerksicherheit aufrechtzuerhalten und eine angemessene Nutzung durchzusetzen, können wir das Risikolevel besuchter Domains bewerten und den Zugang zu bösartigen oder unangemessenen Websites blockieren.',
+                'es': 'Para mantener la seguridad de la red y hacer cumplir el uso adecuado, podemos evaluar el nivel de riesgo de los dominios visitados y bloquear el acceso a sitios web maliciosos o inapropriados.',
+                'zh': '为了维护网络安全并强制执行适当的使用，我们可能会评估访问域名的风险级别，并阻止访问恶意或不当网站。'
+            },
+            'paragraph-no-personal-linking': {
+                'en': 'We do not link this data to you personally, and we do not use it for marketing.',
+                'fr': 'Nous ne lions pas ces données à votre personne et nous ne les utilisons pas à des fins de marketing.',
+                'de': 'Wir verknüpfen diese Daten nicht persönlich mit Ihnen und verwenden sie nicht für Marketingzwecke.',
+                'es': 'No vinculamos estos datos con usted personalmente ni los utilizamos para marketing.',
+                'zh': '我们不会将这些数据与您个人关联，也不会将其用于营销。'
+            },
+            'paragraph-data-retention': {
+                'en': 'Data is retained for up to 30 days and may be shared with trusted security providers if needed to address security incidents.',
+                'fr': 'Les données sont conservées jusqu\'à 30 jours et peuvent être partagées avec des fournisseurs de sécurité fiables si nécessaire pour traiter des incidents de sécurité.',
+                'de': 'Daten werden bis zu 30 Tage gespeichert und können bei Bedarf zur Behebung von Sicherheitsvorfällen mit vertrauenswürdigen Sicherheitsanbietern geteilt werden.',
+                'es': 'Los datos se retienen por hasta 30 días y pueden compartirse con proveedores de seguridad de confianza si es necesario para abordar incidentes de seguridad.',
+                'zh': '数据保留长达 30 天，如果需要处理安全事件，可能会与可信赖的安全提供商共享。'
+            },
+            'paragraph-adult-use': {
+                'en': 'This network is intended for use by adult consumers only and is not intended for children. We do not knowingly collect personal data from children.',
+                'fr': 'Ce réseau est destiné à être utilisé uniquement par des consommateurs adultes et n\'est pas destiné aux enfants. Nous ne recueillons pas sciemment de données personnelles d\'enfants.',
+                'de': 'Dieses Netzwerk ist ausschließlich für erwachsene Verbraucher bestimmt und nicht für Kinder gedacht. Wir erfassen wissentlich keine personenbezogenen Daten von Kindern.',
+                'es': 'Esta red está destinada únicamente para el uso de consumidores adultos y no para niños. No recopilamos conscientementedatos personales de niños.',
+                'zh': '此网络仅供成年消费者使用，不适用于儿童。我们不会故意收集儿童的个人数据。'
+            },
+            'paragraph-redirection': {
+                'en': 'Please note that this service will redirect you to LEGO.com, where personal data may be processed in accordance with our Privacy and Cookie Policy.',
+                'fr': 'Veuillez noter que ce service vous redirigera vers LEGO.com, où les données personnelles peuvent être traitées conformément à notre politique de confidentialité et de cookies.',
+                'de': 'Bitte beachten Sie, dass dieser Dienst Sie zu LEGO.com weiterleiten wird, wo personenbezogene Daten gemäß unserer Datenschutz- und Cookie-Richtlinie verarbeitet werden können.',
+                'es': 'Tenga en cuenta que este servicio lo redirigirá a LEGO.com, donde los datos personales pueden procesarse de acuerdo con nuestra Política de privacidad y cookies.',
+                'zh': '请注意，此服务会将您重定向到 LEGO.com，您的个人数据可能会根据我们的隐私和 Cookie 政策进行处理。'
+            },
+            'paragraph-learn-more': {
+                'en': 'Learn more in our Privacy Policy.',
+                'fr': 'En savoir plus dans notre politique de confidentialité.',
+                'de': 'Erfahren Sie mehr in unserer Datenschutzerklärung.',
+                'es': 'Obtenga más información en nuestra Política de privacidad.',
+                'zh': '在我们的隐私政策中了解更多信息。'
+            },
+            // New translations for age verification fields
+            'dob-label': {
+                'en': 'Please enter your Date of Birth:',
+                'fr': 'Veuillez entrer votre date de naissance :',
+                'de': 'Bitte geben Sie Ihr Geburtsdatum ein:',
+                'es': 'Por favor, introduzca su fecha de nacimiento:',
+                'zh': '请输入您的出生日期：'
+            },
+            // Renamed from 'check-age-button'
+            'check-age-button': {
+                'en': 'Continue',
+                'fr': 'Continuer',
+                'de': 'Weiter',
+                'es': 'Continuar',
+                'zh': '继续'
+            },
+            'warning-text': {
+                'en': 'This network is intended for adult consumers only. You must be 18 years or older to use this network.',
+                'fr': 'Ce réseau est destiné aux consommateurs adultes uniquement. Vous devez avoir 18 ans ou plus pour utiliser ce réseau.',
+                'de': 'Dieses Netzwerk ist ausschließlich für erwachsene Verbraucher bestimmt. Sie müssen 18 Jahre oder älter sein, um dieses Netzwerk nutzen zu können.',
+                'es': 'Esta red está destinada únicamente para consumidores adultos. Debe tener 18 años o más para usar esta red.',
+                'zh': '此网络仅供成年消费者使用。您必须年满 18 岁才能使用此网络。'
+            }
+        };
+
+        // Function to detect the user's preferred language
+        function getPreferredLanguage() {
+            let lang = navigator.language || navigator.userLanguage;
+            return lang.split('-')[0];
+        }
+
+        // Function to apply translations
+        function applyTranslations() {
+            const preferredLang = getPreferredLanguage();
+            document.getElementById('detected-language').textContent = preferredLang;
+
+            for (const id in translations) {
+                const element = document.getElementById(id);
+                if (element) {
+                    // Special handling for the button text
+                    if (id === 'check-age-button') {
+                        element.textContent = translations[id][preferredLang] || translations[id]['en'];
+                    } else if (id !== 'warning-text') { // For other elements, update content if not warning-text
+                        element.textContent = translations[id][preferredLang] || translations[id]['en'];
+                    }
+                }
+            }
+            // Update warning text separately to ensure it gets translated when shown
+            const warningElement = document.getElementById('warning-text');
+            if (warningElement) {
+                warningElement.textContent = translations['warning-text'][preferredLang] || translations['warning-text']['en'];
+            }
+            document.documentElement.lang = preferredLang;
+        }
+
+        // Function to calculate age
+        function calculateAge(dob) {
+            const birthDate = new Date(dob);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+        // Function to handle age checking
+        function checkAge() {
+            const dobInput = document.getElementById('dob-input');
+            const warningMessageDiv = document.getElementById('age-warning-message');
+            const dob = dobInput.value;
+
+            if (!dob) {
+                // If date of birth is not entered, show the warning message (already translated by applyTranslations)
+                warningMessageDiv.classList.add('show');
+                return;
+            }
+
+            const age = calculateAge(dob);
+
+            if (age < 18) {
+                warningMessageDiv.classList.add('show');
+            } else {
+                warningMessageDiv.classList.remove('show');
+                warningMessageDiv.textContent = ''; // Clear the message
+            }
+        }
+
+        // Event listener for the "Continue" button
+        document.addEventListener('DOMContentLoaded', () => {
+            applyTranslations(); // Apply initial translations when DOM is loaded
+
+            const checkAgeButton = document.getElementById('check-age-button');
+            if (checkAgeButton) {
+                checkAgeButton.addEventListener('click', checkAge);
+            }
+        });
+    </script>
+</body>
+</html>
