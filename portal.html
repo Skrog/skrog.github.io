@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LEGO® Store Guest - Captive Portal</title>
+    <title>Dynamic Language Translator</title>
     <style>
         /* Import Open Sans from Google Fonts for a LEGO-like feel */
         @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
@@ -74,7 +74,7 @@
             font-weight: 600; /* Slightly bolder label */
         }
 
-        .age-verification-section input[type="month"] { /* Changed to type="month" */
+        .age-verification-section input[type="month"] {
             padding: 0.9rem 1.2rem; /* Increased padding for input */
             border: 1px solid #a0a0a0; /* Slightly darker border */
             border-radius: 0.75rem; /* More rounded corners for inputs */
@@ -144,7 +144,7 @@
             p {
                 font-size: 0.95rem; /* Smaller paragraph text on mobile */
             }
-            .age-verification-section input[type="month"] { /* Changed to type="month" */
+            .age-verification-section input[type="month"] {
                 width: 100%; /* Full width on smaller screens */
                 max-width: none;
             }
@@ -164,7 +164,7 @@
         </p>
         <p id="paragraph-data-collection">
             When you connect to this network, we collect limited technical data (such as
-            your MAC address, device information, and visited domains — not the content).
+            your IP address, device information, and visited domains — not the content).
             This is used strictly for network security, operational purposes, and legal
             compliance. We do not use this data for any other purpose.
         </p>
@@ -194,14 +194,19 @@
             Learn more in our Privacy Policy.
         </p>
 
-        <div class="age-verification-section">
-            <label for="dob-input" id="dob-label">Please enter your Month and Year of Birth:</label>
-            <input type="month" id="dob-input">
-            <button id="check-age-button">Continue</button>
-            <div id="age-warning-message" class="warning-message">
-                <span id="warning-text">This network is intended for adult consumers only.</span>
+        <!-- Form for age verification and captive portal redirection -->
+        <form id="age-verification-form" method="POST" action="">
+            <div class="age-verification-section">
+                <label for="dob-input" id="dob-label">Please enter your Month and Year of Birth:</label>
+                <input type="month" id="dob-input" name="dob"> <!-- Added name attribute for form submission -->
+                <button type="submit" id="check-age-button">Continue</button>
+                <div id="age-warning-message" class="warning-message">
+                    <span id="warning-text">This network is intended for adult consumers only.</span>
+                </div>
             </div>
-        </div>
+            <!-- Hidden input for captive portal redirection -->
+            <input type="hidden" name="redirect" value="$redirect" />
+        </form>
 
         <div class="language-display">
             Your browser's preferred language is: <span id="detected-language"></span>
@@ -283,11 +288,11 @@
             },
             // New translations for age verification fields
             'dob-label': {
-                'en': 'Please enter your Month and Year of Birth:', /* Updated label text */
-                'fr': 'Veuillez entrer votre mois et année de naissance :',
-                'de': 'Bitte geben Sie Ihren Geburtsmonat und Ihr Geburtsjahr ein:',
-                'es': 'Por favor, introduzca su mes y año de nacimiento:',
-                'zh': '请输入您的出生月份和年份：'
+                'en': 'Please enter or select your Month and Year of Birth:',
+                'fr': 'Veuillez entrer ou sélectionner votre mois et année de naissance :',
+                'de': 'Bitte geben Sie Ihren Geburtsmonat und Ihr Geburtsjahr ein oder wählen Sie diese aus:',
+                'es': 'Por favor, introduzca o seleccione su mes y año de nacimiento:',
+                'zh': '请输入或选择您的出生月份和年份：'
             },
             'check-age-button': {
                 'en': 'Continue',
@@ -333,7 +338,7 @@
             document.documentElement.lang = preferredLang;
         }
 
-        // Function to calculate age based on month and year
+        // Function to calculate age based on month and year (YYYY-MM format)
         function calculateAge(dobMonthYear) {
             // dobMonthYear will be in "YYYY-MM" format from input type="month"
             const [birthYear, birthMonth] = dobMonthYear.split('-').map(Number); // Get year and month as numbers
@@ -352,32 +357,52 @@
         }
 
         // Function to handle age checking
-        function checkAge() {
+        function checkAge(event) {
+            event.preventDefault(); // Prevent default form submission initially
+
             const dobInput = document.getElementById('dob-input');
             const warningMessageDiv = document.getElementById('age-warning-message');
             const dob = dobInput.value; // This will be "YYYY-MM"
+            const form = document.getElementById('age-verification-form');
+
+            // Clear any previous warning message
+            warningMessageDiv.classList.remove('show');
+            warningMessageDiv.textContent = '';
 
             if (!dob) {
+                // Using the specific invalid format message as it implies missing input
+                warningMessageDiv.textContent = translations['warning-text-invalid-format'][getPreferredLanguage()] || translations['warning-text-invalid-format']['en'];
                 warningMessageDiv.classList.add('show');
                 return;
             }
 
             const age = calculateAge(dob);
 
+            // The `calculateAge` function returns -1 for invalid input format or out-of-range dates
+            if (age === -1 || age < 0) { // Also check for age < 0 in case of future date input
+                 warningMessageDiv.textContent = translations['warning-text-invalid-format'][getPreferredLanguage()] || translations['warning-text-invalid-format']['en'];
+                 warningMessageDiv.classList.add('show');
+                 return;
+            }
+
+
             if (age < 18) {
+                warningMessageDiv.textContent = translations['warning-text'][getPreferredLanguage()] || translations['warning-text']['en'];
                 warningMessageDiv.classList.add('show');
             } else {
-                warningMessageDiv.classList.remove('show');
-                warningMessageDiv.textContent = ''; // Clear the message
+                // Age is 18 or over, submit the form
+                form.submit();
             }
         }
 
         // Event listener for the "Continue" button
         document.addEventListener('DOMContentLoaded', () => {
-            applyTranslations();
+            applyTranslations(); // Apply initial translations when DOM is loaded
 
             const checkAgeButton = document.getElementById('check-age-button');
             if (checkAgeButton) {
+                // Attach the event listener to the form's submit event or the button's click event
+                // Using button click and preventing default to run age check first
                 checkAgeButton.addEventListener('click', checkAge);
             }
         });
