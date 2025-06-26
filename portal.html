@@ -195,7 +195,8 @@
         </p>
 
         <!-- Form for age verification and captive portal redirection -->
-        <form id="age-verification-form" method="POST" action="">
+        <!-- #################### This tag is mandatory ##################### -->
+        <form name="ap" method="POST" action="$action" onsubmit ='javascript:return validate();'>
             <div class="age-verification-section">
                 <label for="dob-input" id="dob-label">Please enter your Month and Year of Birth:</label>
                 <input type="month" id="dob-input" name="dob"> <!-- Added name attribute for form submission -->
