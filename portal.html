@@ -203,9 +203,10 @@
                 <div id="age-warning-message" class="warning-message">
                     <span id="warning-text">This network is intended for adult consumers only.</span>
                 </div>
+                <!-- #################### This tag is mandatory ##################### -->
+                <input type="hidden" name="redirect" value="$redirect" />
             </div>
-            <!-- Hidden input for captive portal redirection -->
-            <input type="hidden" name="redirect" value="$redirect" />
+            
         </form>
 
         <div class="language-display">
